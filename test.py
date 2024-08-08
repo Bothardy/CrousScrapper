@@ -11,7 +11,7 @@ from datetime import datetime
 def send_email(subject, body):
     from_email = "youshii14@gmail.com"
     to_email = "youshii14@gmail.com"
-    password = "fela khuz wclb zgnb"  # Remplacez par votre mot de passe d'application
+    password = "app password add "  # Remplacez par votre mot de passe d'application
 
     # Création de l'objet de message MIMEMultipart
     msg = MIMEMultipart()
