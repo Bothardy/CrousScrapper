@@ -6,17 +6,18 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
+import pytz  # Import the pytz library to handle timezone conversions
 
 # Configuration de l'e-mail
 def send_email(subject, body):
     from_email = "youshii14@gmail.com"
-    to_email = "youshii14@gmail.com"
-    password = "app password add "  # Remplacez par votre mot de passe d'application
+    to_emails = ["youshii14@gmail.com"]  # Liste des destinataires
+    password = "fela khuz wclb zgnb"  # Remplacez par votre mot de passe d'application
 
     # Création de l'objet de message MIMEMultipart
     msg = MIMEMultipart()
     msg['From'] = from_email
-    msg['To'] = to_email
+    msg['To'] = ", ".join(to_emails)  # Joindre les adresses e-mails avec une virgule
     msg['Subject'] = subject
 
     # Attachement du corps de l'e-mail
@@ -28,7 +29,7 @@ def send_email(subject, body):
         server.starttls()
         server.login(from_email, password)
         text = msg.as_string()
-        server.sendmail(from_email, to_email, text)
+        server.sendmail(from_email, to_emails, text)
         server.quit()
         print("E-mail envoyé avec succès")
     except Exception as e:
@@ -69,10 +70,9 @@ def scrape_logements():
 
             num_logements = len(logements)
 
-            # Format the results
-            results = f"Nombre total de logements trouvés : {num_logements}\n\n"
-
             if num_logements > 0:
+                # Format the results
+                results = f"Nombre total de logements trouvés : {num_logements}\n\n"
                 for logement in logements:
                     results += f"Title: {logement['title']}\n"
                     results += f"Description: {logement['description']}\n"
@@ -80,15 +80,16 @@ def scrape_logements():
                     results += f"Details: {', '.join(logement['details'])}\n"
                     results += "-----\n"
 
-                # Get the current date and time
-                now = datetime.now()
+                # Get the current date and time in Marseille
+                marseille_tz = pytz.timezone('Europe/Paris')
+                now = datetime.now(marseille_tz)
                 date_time_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
                 subject = f"Résultats de la recherche ({date_time_str}) : {num_logements} logements trouvés"
-                # Send the email with results only if there are logements found
+                # Send the email with results
                 send_email(subject, results)
             else:
-                print("Aucun logement trouvé.")
+                print("Aucun logement trouvé. Aucune e-mail n'a été envoyé.")
 
         else:
             print(f"Échec de la récupération de la page. Code d'état : {response.status_code}")
@@ -96,9 +97,9 @@ def scrape_logements():
     except Exception as e:
         print(f"Une erreur s'est produite : {e}")
 
-    # Schedule the function to run again in 60 seconds
+    # Schedule the function to run again in 5 seconds
     if not stop_event.is_set():
-        threading.Timer(60, scrape_logements).start()
+        threading.Timer(5, scrape_logements).start()
 
 # Create an Event object to signal the stopping of the thread
 stop_event = threading.Event()
@@ -113,4 +114,4 @@ try:
 except KeyboardInterrupt:
     # Set the stop_event when a keyboard interrupt is detected
     stop_event.set()
-    print("Arrêt du thread de scraping fin.")
+    print("Arrêt du thread de scraping.")
