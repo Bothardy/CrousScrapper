@@ -10,8 +10,8 @@ import pytz  # Import the pytz library to handle timezone conversions
 
 # Configuration de l'e-mail
 def send_email(subject, body):
-    from_email = "youshii14@gmail.com"
-    to_emails = ["youshii14@gmail.com"]  # Liste des destinataires
+    from_email = "@gmail.com"
+    to_emails = ["gmail"]  # Liste des destinataires
     password = "fela khuz wclb zgnb"  # Remplacez par votre mot de passe d'application
 
     # Création de l'objet de message MIMEMultipart
